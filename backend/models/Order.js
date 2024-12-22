@@ -27,7 +27,7 @@ const orderSchema = new Schema({
     order_total: {
         type: Number
     },
-    _status: {
+    order_status: {
         type: String,
         enum: ['Order Confirmed', 'Order Delivered']
     },
