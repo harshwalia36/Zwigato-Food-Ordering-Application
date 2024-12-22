@@ -29,7 +29,7 @@ const orderSchema = new Schema({
     },
     order_status: {
         type: String,
-        enum: ['Order Confirmed', 'Order Delivered']
+        enum: ['Order Confirmed', 'Order Delivered', 'Order Cancelled'],
     },
 }, { timestamps: true });
 

@@ -74,3 +74,5 @@ const restaurantSchema = new Schema({
         required: [true, 'Menu is required']
     }
 }, { timestamps: true });
+
+module.exports = mongoose.model('Restaurant', restaurantSchema);

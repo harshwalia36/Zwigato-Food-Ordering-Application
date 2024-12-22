@@ -13,11 +13,11 @@ const paymentSchema = new Schema({
     },
     payment_status: {
         type: String,
-        enum: ['Pending', 'Paid']
+        enum: ['Pending', 'Paid', 'Failed', 'Cancelled']
     },
     payment_method: {
         type: String,
-        enum: ['Credit Card', 'Debit Card', 'UPI', 'Net Banking']
+        enum: ['Credit Card', 'Debit Card', 'UPI', 'Net Banking', 'Cash', 'Others']
     },
     payment_amount: {
         type: Number

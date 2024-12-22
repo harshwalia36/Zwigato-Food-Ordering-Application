@@ -17,11 +17,12 @@ const userSchema = new Schema({
         required: [true, 'Phone number is required']
     },
     age: {
-        type: Number,
-        required: [true, 'Age is required']
+        type: Number
     },
     address: {
         type: addressSchema,
         required: [true, 'Address is required']
     }
 }, { timestamps: true });
+
+module.exports = mongoose.model('User', userSchema);
