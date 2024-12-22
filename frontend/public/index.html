@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Zwigato</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    form {
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"] {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    input[type="submit"] {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    #restaurant-list {
+      margin-top: 2rem;
+    }
+
+    #restaurant-list h2 {
+      margin-bottom: 1rem;
+    }
+
+    #restaurant-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #restaurant-list li {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Zwigato</h1>
+  </header>
+
+  <main>
+    <h2>Order Delicious Food</h2>
+    <p>Enter your location to find restaurants near you.</p>
+
+    <form>
+      <label for="location">Enter your location:</label><br>
+      <input type="text" id="location" name="location" placeholder="e.g., Your City, State"><br><br>
+      <input type="submit" value="Find Restaurants">
+    </form>
+
+    <section id="restaurant-list">
+      <h2>Restaurants near you:</h2>
+      <ul>
+        </ul>
+    </section>
+  </main>
+
+</body>
+</html>
