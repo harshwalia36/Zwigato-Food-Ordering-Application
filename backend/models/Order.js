@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const addressSchema = require('./CommonSchema');
+import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 

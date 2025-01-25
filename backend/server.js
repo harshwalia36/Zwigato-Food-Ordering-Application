@@ -2,7 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
-const onboardingRestaurantsRoutes = require('./routes/onboarding_restaurants');
+const bodyParser = require('body-parser');
+const restaurantsRoutes = require('./routes/restaurants').default;
 
 const app = express();
 
@@ -10,13 +11,13 @@ const app = express();
 app.use(express.json());
 app.use((req, res, next) => {
     console.log(req.path, req.method);
+    next();
 });
 
-app.use('/partner-with-us/new', onboardingRestaurantsRoutes);
+app.use('/', restaurantsRoutes);
 
-console.log(process.env.MONGO_URI);
 //connect to mongodb
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true })
     .then(() => {
         //listen for requests
         app.listen(process.env.PORT, () => {

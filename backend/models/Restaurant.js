@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const addressSchema = require('./CommonSchema');
+import mongoose from 'mongoose';
+import addressSchema from './CommonSchema.js';
 
 const Schema = mongoose.Schema;
 
@@ -9,7 +9,7 @@ const dishSchema = new Schema({
         required: [true, 'Name is required']
     },
     price: {
-        type: Number,
+        type: String,
         required: [true, 'Price is required']
     },
     description: {
@@ -37,31 +37,40 @@ const restaurantSchema = new Schema({
         required: [true, 'Address is required']
     },
     overview: {
-        restaruant_type: {
-            type: String
-        },
-        book_table: {
-            type: Boolean
+        restaurant_type: {
+            type: [String],
+            required: [true, 'Restaurant type is required']
         },
         online_order: {
-            type: Boolean
+            type: Boolean,
+            default: true
         },
         dish_liked: {
             type: [String]
         },
         approx_cost_2_person: {
-            type: Number
-        },
-        restaruant_delivery_time: {
-            open: {
-                type: String
-            },
-            close: {
-                type: String
-            }
-        },
+            type: Number,
+            required: [true, 'Approx cost for 2 person is required']
+        }
     },
-    restaruant_profile_img: {
+    /*
+     * Store opening and closing time in 24-hour format.
+    */
+    restaurant_delivery_time: {
+        open: {
+            type: Date,
+            required: [true, 'Opening time is required']
+        },
+        close: {
+            type: Date,
+            required: [true, 'Closing time is required']
+        },
+        open_days: {
+            type: [Boolean], // Array of 7 booleans (Monday to Sunday)
+            required: [true, 'Open days are required']
+        }
+    },
+    restaurant_profile_img: {
         type: String
     },
     gallery: {
@@ -69,10 +78,20 @@ const restaurantSchema = new Schema({
             type: [String]    // Array of photo URLs
         }
     },
-    restaruant_menu: {
-        type: [dishSchema],     // Array of dish objects
+    restaurant_menu: {
+        type: [{
+            category: {
+                type: String,
+                required: [true, 'Category is required']
+            },
+            dishes: {
+                type: [dishSchema],
+                required: [true, 'Dishes are required']
+            }
+        }],
         required: [true, 'Menu is required']
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Restaurant', restaurantSchema);
+
+export default mongoose.model('Restaurant', restaurantSchema);
