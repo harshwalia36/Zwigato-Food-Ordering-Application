@@ -1,10 +1,11 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-const pointSchema = new mongoose.Schema({
+const pointSchema = new Schema({
     type: {
         type: String,
         enum: ['Point'],
-        required: true
+        // required: true
     },
     coordinates: {
         type: [Number],
@@ -12,7 +13,7 @@ const pointSchema = new mongoose.Schema({
     }
 });
 
-const addressSchema = new mongoose.Schema({
+const addressSchema = new Schema({
     street: {
         type: String,
         required: [true, 'Street is required']
@@ -26,12 +27,13 @@ const addressSchema = new mongoose.Schema({
         required: [true, 'State is required']
     },
     zip: {
-        type: String
+        type: Number,
+        required: [true, 'Zip is required']
     },
     location: {
-        type: pointSchema
+        type: pointSchema,
+        required: [true, 'Location is required']
     }
 });
 
-module.exports.pointSchema = pointSchema;
-module.exports.addressSchema = addressSchema;
+export default addressSchema;
