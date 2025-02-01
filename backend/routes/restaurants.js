@@ -11,7 +11,7 @@ router.get('/', getAllRestaurantsInfo);
 
 router.get('/{restaurantId}', getSingleRestaurantInfo);
 
-router.post('/partner-with-us/new/onboarding', upload.single('image'), onboardingRestaurant);
+router.post('/partner-with-us/new/onboarding', upload.array('images'), onboardingRestaurant);
 
 
 export default router;

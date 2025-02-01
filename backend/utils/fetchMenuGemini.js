@@ -26,12 +26,18 @@ const fetchMenuFromImage = async (filepath, mimeType) => {
       Return: Array<Item>
     `;
 
-    const result = await model.generateContent([{
-        inlineData: {
-            data: Buffer.from(imageResp).toString('base64'),
-            mimeType: mimeType,
-        },
-    }, prompt]);
+    let result;
+    try {
+        result = await model.generateContent([{
+            inlineData: {
+                data: Buffer.from(imageResp).toString('base64'),
+                mimeType: mimeType,
+            },
+        }, prompt]);
+    } catch (error) {
+        console.error("Error generating content:", error);
+        throw error;
+    }
     return result.response.text();
 
 };

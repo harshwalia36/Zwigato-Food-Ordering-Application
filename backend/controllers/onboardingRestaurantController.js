@@ -2,6 +2,25 @@ import Restaurant from '../models/Restaurant.js';
 import { StatusCodes } from 'http-status-codes';
 import { fetchMenuFromImage } from '../utils/fetchMenuGemini.js';
 import { uploadImageToS3 } from '../utils/s3_upload.js';
+import crypto from 'crypto';
+
+
+/*
+Mapping {key: value} to store the image already uploaded to S3
+key: buffer.toString('base64')
+value: s3 image url
+*/
+const mapToStoreImageAlreadyUploaded = new Map();
+
+const CheckIfImageAlreadyUploaded = (imageBuffer) => {
+    const image_buffer_string = imageBuffer.toString('base64');
+    const hash_val = crypto.createHash('sha256').update(image_buffer_string).digest('hex');
+    if (mapToStoreImageAlreadyUploaded.has(hash_val)) {
+        return mapToStoreImageAlreadyUploaded.get(hash_val);
+    }
+    return '';
+}
+
 
 const convertStringTimeToDateTime = (timeString) => {
     const [hour, minute] = timeString.split(':');
@@ -9,7 +28,7 @@ const convertStringTimeToDateTime = (timeString) => {
 }
 
 export const onboardingRestaurant = async (req, res) => {
-    if (!req.file) {
+    if (!req.files) {
         return res.status(400).send('No file uploaded.');
     }
 
@@ -52,25 +71,36 @@ export const onboardingRestaurant = async (req, res) => {
         }
     });
 
-    const uploadedImagePath = await uploadImageToS3(req.file, process.env.S3_BUCKET_NAME);
-    if (!uploadedImagePath) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Error uploading image to S3' });
-    }
-    console.log('uploadedImagePath:', uploadedImagePath);
+    let mergerdMenuItemsJSON = {};
+    for (const image of req.files) {
+        console.log('Image:', image);
+        let uploadedImagePath = CheckIfImageAlreadyUploaded(image.buffer);
+        if (uploadedImagePath === '') {
+            try {
+                uploadedImagePath = await uploadImageToS3(image, process.env.S3_BUCKET_NAME);
+                const image_buffer_string = image.buffer.toString('base64');
+                const hash_val = crypto.createHash('sha256').update(image_buffer_string).digest('hex');
+                mapToStoreImageAlreadyUploaded.set(hash_val, uploadedImagePath);
+            } catch (error) {
+                console.error('Error uploading image to S3:', error);
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error uploading image to S3', error });
+            }
+        }
 
-    const MenuItems = await fetchMenuFromImage(uploadedImagePath, req.file.mimetype);
-    if (!MenuItems) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching menu items.' });
+        const MenuItems = await fetchMenuFromImage(uploadedImagePath, image.mimetype);
+        if (!MenuItems) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching menu items.' });
+        }
+        /*
+        output format: ```json[{...}]```
+        remove first 8 and last 3 characters to get the array of object string
+        */
+        const MenuItemsJSON = JSON.parse(MenuItems.slice(8, MenuItems.length - 3));
+        mergerdMenuItemsJSON = { ...mergerdMenuItemsJSON, ...MenuItemsJSON };
     }
-    /*
-    output format: ```json[
-    {
-    }]```
-    remove first 8 and last 3 characters to get the array of object string
-    */
-    const MenuItemsJSON = JSON.parse(MenuItems.slice(8, MenuItems.length - 3));
+
     try {
-        restaurant.restaurant_menu = MenuItemsJSON;
+        restaurant.restaurant_menu = mergerdMenuItemsJSON;
         console.log('Restaurant:', restaurant);
     }
     catch (error) {
@@ -84,9 +114,9 @@ export const onboardingRestaurant = async (req, res) => {
         return res.status(200).json(savedRestaurant);
     } catch (error) {
         console.error('Error saving restaurant:', error);
-        return res.status(500).json({ message: 'Error saving restaurant to the database' , error});
-     
+        return res.status(500).json({ message: 'Error saving restaurant to the database', error });
+
     }
-    
-}; 
+
+};
 
