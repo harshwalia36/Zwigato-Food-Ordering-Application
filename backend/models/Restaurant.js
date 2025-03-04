@@ -10,7 +10,6 @@ const dishSchema = new Schema({
     },
     price: {
         type: String,
-        required: [true, 'Price is required']
     },
     description: {
         type: String

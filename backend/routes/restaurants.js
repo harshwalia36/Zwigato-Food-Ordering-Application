@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer, { memoryStorage } from 'multer';
-import { onboardingRestaurant } from '../controllers/onboardingRestaurantController.js';
-import { getSingleRestaurantInfo, getAllRestaurantsInfo } from '../controllers/restaurantInfoController.js';
+import { onboardingRestaurant } from '../controllers/restaurantController.js';
+import { getSingleRestaurantInfo, getAllRestaurantsInfo } from '../controllers/restaurantController.js';
 const upload = multer({ storage: memoryStorage() }); // Specify the upload directory
 
 
@@ -11,7 +11,7 @@ router.get('/', getAllRestaurantsInfo);
 
 router.get('/{restaurantId}', getSingleRestaurantInfo);
 
-router.post('/partner-with-us/new/onboarding', upload.single('image'), onboardingRestaurant);
+router.post('/partner-with-us/new/onboarding', upload.array('images'), onboardingRestaurant);
 
 
 export default router;
