@@ -14,7 +14,8 @@ const fetchMenuFromImage = async (filepath, mimeType) => {
       Objective: Your Objective is given the image of Restaurant Menu, fetch each of the menu items, their prices and description respectively.
       You must follow the below constraints:
       1. You must fetch all the menu items, there prices, description and category.
-      2. Return the data using the following JSON Schema.
+      2. You must fetch the menu_item and its price compulsorily.
+      3. Return the data using the following JSON Schema.
       Item: {
             'category': string,
             'dishes' : {
